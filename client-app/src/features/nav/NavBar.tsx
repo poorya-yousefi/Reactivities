@@ -15,7 +15,7 @@ export const NavBar = () => {
                 </Menu.Item>
                 <Menu.Item name="Activities" />
                 <Menu.Item>
-                    {/* <Button positive>Create Activity</Button> */}
+                    <Button positive>Create Activity</Button>
                 </Menu.Item>
             </Menu>
         </Container>
