@@ -4,9 +4,13 @@ import { IActivity } from "../../../app/models/activity";
 
 interface IProps {
     activities: IActivity[];
+    selectActivity: (id: string) => void;
 }
 
-export const ActivityList: React.FC<IProps> = ({ activities }) => {
+export const ActivityList: React.FC<IProps> = ({
+    activities,
+    selectActivity,
+}) => {
     return (
         <Segment clearing>
             <Item.Group divided>
@@ -23,7 +27,13 @@ export const ActivityList: React.FC<IProps> = ({ activities }) => {
                             </Item.Description>
                             <Item.Extra>
                                 <Label basic>{activity.category}</Label>
-                                <Button primary floated="right">
+                                <Button
+                                    primary
+                                    floated="right"
+                                    onClick={() => {
+                                        selectActivity(activity.id);
+                                    }}
+                                >
                                     View
                                 </Button>
                             </Item.Extra>
