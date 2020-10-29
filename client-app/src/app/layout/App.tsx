@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import "./styles.css";
 import Axios from "axios";
 import { IActivity } from "../models/activity";
-import { List } from "semantic-ui-react";
+import { Container, List } from "semantic-ui-react";
 import { NavBar } from "../../features/nav/NavBar";
 
 const App = () => {
@@ -17,14 +17,18 @@ const App = () => {
     }, []);
 
     return (
-        <div>
+        <Fragment>
             <NavBar />
-            <List>
-                {activities.map((activity) => (
-                    <List.Item key={activity.id}>{activity.title}</List.Item>
-                ))}
-            </List>
-        </div>
+            <Container style={{ marginTop: "7em" }}>
+                <List>
+                    {activities.map((activity) => (
+                        <List.Item key={activity.id}>
+                            {activity.title}
+                        </List.Item>
+                    ))}
+                </List>
+            </Container>
+        </Fragment>
     );
 };
 
