@@ -20,7 +20,7 @@ const requests = {
         axios.delete(url).then(sleep(1000)).then(responseBody),
 };
 
-const activities = {
+const Activities = {
     list: (): Promise<IActivity[]> => requests.get("/activities"),
     details: (id: string) => requests.get(`/activities/${id}`),
     create: (activity: IActivity) => requests.post("/activities", activity),
@@ -30,5 +30,5 @@ const activities = {
 };
 
 export default {
-    activities,
+    Activities,
 };

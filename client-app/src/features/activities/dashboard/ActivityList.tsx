@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import ActivityStore from "../../../app/stores/activityStore";
 
@@ -7,7 +8,6 @@ const ActivityList: React.FC = () => {
     const activityStore = useContext(ActivityStore);
     const {
         activitiesByDate,
-        selectActivity,
         submitting,
         deleteActivity,
         target,
@@ -32,9 +32,8 @@ const ActivityList: React.FC = () => {
                                     primary
                                     content="View"
                                     floated="right"
-                                    onClick={() => {
-                                        selectActivity(activity.id);
-                                    }}
+                                    as={Link}
+                                    to={`/activities/${activity.id}`}
                                 />
                                 <Button
                                     name={activity.id}
