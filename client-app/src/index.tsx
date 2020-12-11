@@ -3,17 +3,19 @@ import ReactDOM from "react-dom";
 import "semantic-ui-css/semantic.min.css";
 import App from "./app/layout/App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 import ScrollToTop from "./app/layout/ScrollToTop";
+import { createBrowserHistory } from "history";
+import "react-toastify/dist/ReactToastify.min.css";
+
+export const history = createBrowserHistory(); //pass to agent.ts and use in axios error handler
 
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <ScrollToTop>
-                <App />
-            </ScrollToTop>
-        </BrowserRouter>
-    </React.StrictMode>,
+    <Router history={history}>
+        <ScrollToTop>
+            <App />
+        </ScrollToTop>
+    </Router>,
     document.getElementById("root")
 );
 
