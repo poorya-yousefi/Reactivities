@@ -9,6 +9,8 @@ using MediatR;
 using FluentValidation.AspNetCore;
 using Application.Activities;
 using API.Middleware;
+using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace API
 {
@@ -40,6 +42,14 @@ namespace API
                 });
             });
             services.AddMediatR(typeof(Application.Activities.List.Handler).Assembly);
+
+            //add identity
+            var builder = services.AddIdentityCore<AppUser>();
+            var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            identityBuilder.AddEntityFrameworkStores<DataContext>();
+            identityBuilder.AddSignInManager<SignInManager<AppUser>>();
+
+            services.AddAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
