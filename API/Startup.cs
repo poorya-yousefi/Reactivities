@@ -67,6 +67,7 @@ namespace API
                             opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                             {
                                 ValidateIssuerSigningKey = true,
+                                //get TokenKey from dotnet user-secrets which is specific in each enviroment or server storage!
                                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
                                 ValidateAudience = false,
                                 ValidateIssuer = false,
@@ -74,6 +75,7 @@ namespace API
                         });
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
