@@ -6,14 +6,22 @@ import {
     configure,
     runInAction,
 } from "mobx";
-import { createContext, SyntheticEvent } from "react";
+import { SyntheticEvent } from "react";
 import agent from "../api/agent";
 import { IActivity } from "../models/activity";
 import { history } from "../..";
+import { RootStore } from "./rootStore";
 
 configure({ enforceActions: "always" });
 
-class ActivityStore {
+export default class ActivityStore {
+    rootStore: RootStore;
+
+    constructor(rootStore: RootStore) {
+        makeObservable(this);
+        this.rootStore = rootStore;
+    }
+
     @observable activities = new Map();
     @observable activity: IActivity | null = null;
     @observable loadingInitial = false;
@@ -147,10 +155,4 @@ class ActivityStore {
             });
         }
     };
-
-    constructor() {
-        makeObservable(this);
-    }
 }
-
-export default createContext(new ActivityStore());
