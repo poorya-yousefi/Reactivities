@@ -27,21 +27,31 @@ axios.interceptors.response.use(undefined, (error) => {
     throw error;
 });
 
-const responseBody = (response: AxiosResponse) => response.data;
+const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
-const sleep = (ms: number) => (response: AxiosResponse) =>
-    new Promise<AxiosResponse>((resolve) =>
-        setTimeout(() => resolve(response), ms)
-    );
+const sleep = (delay: number) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, delay);
+    });
+};
+
+axios.interceptors.response.use(async (response) => {
+    try {
+        await sleep(1000);
+        return response;
+    } catch (error) {
+        console.log(error);
+        return await Promise.reject(error);
+    }
+});
 
 const requests = {
-    get: (url: string) => axios.get(url).then(sleep(1000)).then(responseBody),
-    post: (url: string, body: {}) =>
-        axios.post(url, body).then(sleep(1000)).then(responseBody),
-    put: (url: string, body: {}) =>
-        axios.put(url, body).then(sleep(1000)).then(responseBody),
-    del: (url: string) =>
-        axios.delete(url).then(sleep(1000)).then(responseBody),
+    get: <T>(url: string) => axios.get<T>(url).then(responseBody),
+    post: <T>(url: string, body: {}) =>
+        axios.post<T>(url, body).then(responseBody),
+    put: <T>(url: string, body: {}) =>
+        axios.put<T>(url, body).then(responseBody),
+    del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 };
 
 const Activities = {
@@ -61,7 +71,8 @@ const User = {
         requests.post("/user/register", user),
 };
 
-export default {
+const agent = {
     Activities,
     User,
 };
+export default agent;

@@ -13,7 +13,6 @@
         "@types/react-router-dom": "^5.1.6",
         "@types/react-widgets": "^4.4.3",
         "@types/revalidate": "^1.1.2",
-        "@types/uuid": "^8.3.0",
         "axios": "^0.21.1",
         "final-form": "^4.20.1",
         "install": "^0.13.0",
@@ -31,7 +30,7 @@
         "revalidate": "^1.2.0",
         "semantic-ui-css": "^2.4.1",
         "semantic-ui-react": "^2.0.3",
-        "uuid": "^8.3.1"
+        "uuid": "^8.3.2"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -53,5 +52,8 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "@types/uuid": "^8.3.0"
     }
 }

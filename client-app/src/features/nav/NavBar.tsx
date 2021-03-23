@@ -5,8 +5,8 @@ import { Menu, Container, Button } from "semantic-ui-react";
 
 const NavBar: React.FC = () => {
     return (
-        <Container>
-            <Menu fixed="top" inverted>
+        <Menu fixed="top" inverted>
+            <Container>
                 <Menu.Item as={NavLink} exact to="/" header>
                     <img
                         src="/assets/logo.png"
@@ -24,8 +24,8 @@ const NavBar: React.FC = () => {
                         content={"Create Activity"}
                     />
                 </Menu.Item>
-            </Menu>
-        </Container>
+            </Container>
+        </Menu>
     );
 };
 
