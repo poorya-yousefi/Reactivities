@@ -8,15 +8,15 @@ namespace API.Controllers
 {
     public class UserController : BaseController
     {
-        [HttpPost("login")]
         [AllowAnonymous]
+        [HttpPost("login")]
         public async Task<ActionResult<LoginModel>> Login(Login.Query query)
         {
             return await Mediator.Send(query);
         }
 
-        [HttpPost("register")]
         [AllowAnonymous]
+        [HttpPost("register")]
         public async Task<ActionResult<RegisterModel>> Register(Register.Command command)
         {
             return await Mediator.Send(command);
