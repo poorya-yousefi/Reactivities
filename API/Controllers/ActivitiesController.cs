@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     public class ActivitiesController : BaseController
     {
         [HttpGet]
@@ -25,16 +25,16 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Unit>> Create(Create.Command command)
+        public async Task<ActionResult<Unit>> Create(Activity activity)
         {
-            return await Mediator.Send(command);
+            return await Mediator.Send(new Create.Command { Activity = activity });
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> Edit(Guid id, Edit.Command command)
+        public async Task<ActionResult<Unit>> Edit(Guid id, Activity activity)
         {
-            command.Id = id;
-            return await Mediator.Send(command);
+            activity.Id = id;
+            return await Mediator.Send(new Edit.Command { Activity = activity });
         }
 
         [HttpDelete("{id}")]

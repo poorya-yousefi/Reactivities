@@ -12,25 +12,19 @@ namespace Application.Activities
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public string Category { get; set; }
-            public DateTime Date { get; set; }
-            public string City { get; set; }
-            public string Venue { get; set; }
+            public Activity Activity { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Title).NotEmpty();
-                RuleFor(x => x.Description).NotEmpty();
-                RuleFor(x => x.Category).NotEmpty();
-                RuleFor(x => x.Date).NotEmpty();
-                RuleFor(x => x.City).NotEmpty();
-                RuleFor(x => x.Venue).NotEmpty();
+                RuleFor(x => x.Activity.Title).NotEmpty();
+                RuleFor(x => x.Activity.Description).NotEmpty();
+                RuleFor(x => x.Activity.Category).NotEmpty();
+                RuleFor(x => x.Activity.Date).NotEmpty();
+                RuleFor(x => x.Activity.City).NotEmpty();
+                RuleFor(x => x.Activity.Venue).NotEmpty();
             }
         }
 
@@ -43,18 +37,18 @@ namespace Application.Activities
             }
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = new Activity
-                {
-                    Id = request.Id,
-                    Title = request.Title,
-                    Description = request.Description,
-                    Category = request.Category,
-                    Date = request.Date,
-                    City = request.City,
-                    Venue = request.Venue
-                };
+                // var activity = new Activity
+                // {
+                //     Id = request.Id,
+                //     Title = request.Title,
+                //     Description = request.Description,
+                //     Category = request.Category,
+                //     Date = request.Date,
+                //     City = request.City,
+                //     Venue = request.Venue
+                // };
 
-                _context.Activities.Add(activity);
+                _context.Activities.Add(request.Activity);
 
                 var success = await _context.SaveChangesAsync() > 0;
                 if (success) return Unit.Value;

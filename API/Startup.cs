@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
-using Microsoft.EntityFrameworkCore;
-using MediatR;
-using FluentValidation.AspNetCore;
-using Application.Activities;
 using API.Middleware;
 using Domain;
 using Microsoft.AspNetCore.Identity;
@@ -15,8 +11,7 @@ using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using API.Extensions;
 
 namespace API
 {
@@ -32,28 +27,7 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(opt =>
-            {
-                //set all controllers to unAuthorize. we should use allow anynomous in UserController!
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                opt.Filters.Add(new AuthorizeFilter(policy));
-            })
-            .AddFluentValidation(cfg =>
-            {
-                cfg.RegisterValidatorsFromAssemblyContaining<Create>();
-            });
-            services.AddDbContext<DataContext>(opt =>
-            {
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
-            });
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
-                });
-            });
-            services.AddMediatR(typeof(Application.Activities.List.Handler).Assembly);
+            services.AddApplicationServices(Configuration);
 
             //add identity
             var builder = services.AddIdentityCore<AppUser>();

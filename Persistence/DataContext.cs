@@ -18,10 +18,10 @@ namespace Persistence
             //must be add in IdentityDbContext
             base.OnModelCreating(model);
 
-            model.Entity<Value>().HasData(
-                new Value { Id = 1, Name = "val1" },
-                new Value { Id = 2, Name = "val2" },
-                new Value { Id = 3, Name = "val3" });
+            // model.Entity<Value>().HasData(
+            //     new Value { Id = 1, Name = "val1" },
+            //     new Value { Id = 2, Name = "val2" },
+            //     new Value { Id = 3, Name = "val3" });
         }
     }
 }
