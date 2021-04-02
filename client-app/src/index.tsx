@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "semantic-ui-css/semantic.min.css";
+import "react-calendar/dist/Calendar.css";
 import App from "./app/layout/App";
 import * as serviceWorker from "./serviceWorker";
 import { Router } from "react-router-dom";

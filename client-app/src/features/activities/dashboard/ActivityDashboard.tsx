@@ -4,6 +4,7 @@ import ActivityList from "./ActivityList";
 import { observer } from "mobx-react-lite";
 import { LoadingComponent } from "../../../app/layout/LoadingComponent";
 import { RootStoreContext } from "../../../app/stores/rootStore";
+import ActivityFilters from "./ActivityFilters";
 
 const ActivityDashboard: React.FC = () => {
     const rootStore = useContext(RootStoreContext);
@@ -22,7 +23,7 @@ const ActivityDashboard: React.FC = () => {
                 <ActivityList />
             </Grid.Column>
             <Grid.Column width={6}>
-                <h2>Activity Filters</h2>
+                <ActivityFilters />
             </Grid.Column>
         </Grid>
     );
