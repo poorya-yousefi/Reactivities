@@ -10,16 +10,16 @@ namespace API.Controllers
     {
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<LoginModel>> Login(Login.Query query)
+        public async Task<IActionResult> Login(Login.Query query)
         {
-            return await Mediator.Send(query);
+            return HandleResult(await Mediator.Send(query));
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<RegisterModel>> Register(Register.Command command)
+        public async Task<IActionResult> Register(Register.Command command)
         {
-            return await Mediator.Send(command);
+            return HandleResult(await Mediator.Send(command));
         }
 
         [Authorize]

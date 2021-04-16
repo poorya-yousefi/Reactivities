@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Errors;
 using Application.Interfaces;
 using Application.Validators;
@@ -17,7 +18,7 @@ namespace Application.Users
 {
     public class Register
     {
-        public class Command : IRequest<RegisterModel>
+        public class Command : IRequest<Result<RegisterModel>>
         {
             public string DisplayName { get; set; }
             public string Username { get; set; }
@@ -36,7 +37,7 @@ namespace Application.Users
             }
         }
 
-        public class Handler : IRequestHandler<Command, RegisterModel>
+        public class Handler : IRequestHandler<Command, Result<RegisterModel>>
         {
             private readonly DataContext _context;
             private readonly UserManager<AppUser> _userManager;
@@ -50,19 +51,21 @@ namespace Application.Users
                 _userManager = userManager;
                 _jwtGenerator = jwtGenerator;
             }
-            public async Task<RegisterModel> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<RegisterModel>> Handle(Command request, CancellationToken cancellationToken)
             {
                 if (await _userManager.Users.AnyAsync(u => u.Email.Equals(request.Email)))
-                    throw new RestException(HttpStatusCode.BadRequest, new
-                    {
-                        Email = "Email is already exists."
-                    });
+                    // throw new RestException(HttpStatusCode.BadRequest, new
+                    // {
+                    //     Email = "Email is already exists."
+                    // });
+                    return Result<RegisterModel>.Failure("Email is already exists.");
 
                 if (await _userManager.Users.AnyAsync(u => u.UserName.Equals(request.Username)))
-                    throw new RestException(HttpStatusCode.BadRequest, new
-                    {
-                        Username = "Username is already exists."
-                    });
+                    // throw new RestException(HttpStatusCode.BadRequest, new
+                    // {
+                    //     Username = "Username is already exists."
+                    // });
+                    return Result<RegisterModel>.Failure("Username is already exists.");
 
                 var user = new AppUser
                 {
@@ -74,13 +77,16 @@ namespace Application.Users
                 var result = await _userManager.CreateAsync(user, request.Password);
 
                 if (result.Succeeded)
-                    return new RegisterModel
+                {
+                    var model = new RegisterModel
                     {
                         DisplayName = user.DisplayName,
                         Username = user.UserName,
                         Token = _jwtGenerator.CreateToken(user),
                         Image = null
                     };
+                    return Result<RegisterModel>.Success(model);
+                }
 
                 throw new Exception("Problem creating user");
             }

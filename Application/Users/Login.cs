@@ -1,6 +1,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Errors;
 using Application.Interfaces;
 using Application.ViewModels;
@@ -13,7 +14,7 @@ namespace Application.Users
 {
     public class Login
     {
-        public class Query : IRequest<LoginModel>
+        public class Query : IRequest<Result<LoginModel>>
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -28,7 +29,7 @@ namespace Application.Users
             }
         }
 
-        public class Handler : IRequestHandler<Query, LoginModel>
+        public class Handler : IRequestHandler<Query, Result<LoginModel>>
         {
             private readonly UserManager<AppUser> userManager;
             private readonly SignInManager<AppUser> signInManager;
@@ -43,24 +44,28 @@ namespace Application.Users
                 this.jwtGenerator = jwtGenerator;
             }
 
-            public async Task<LoginModel> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<LoginModel>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await userManager.FindByEmailAsync(request.Email);
 
-                if (user == null) throw new RestException(HttpStatusCode.Unauthorized);
+                if (user == null) return null;
 
                 var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
-                if (result.Succeeded) return
-                new LoginModel
+                if (result.Succeeded)
                 {
-                    DisplayName = user.DisplayName,
-                    Username = user.UserName,
-                    Token = jwtGenerator.CreateToken(user),
-                    Image = null
-                };
+                    var model = new LoginModel
+                    {
+                        DisplayName = user.DisplayName,
+                        Username = user.UserName,
+                        Token = jwtGenerator.CreateToken(user),
+                        Image = null
+                    };
 
-                throw new RestException(HttpStatusCode.Unauthorized);
+                    return Result<LoginModel>.Success(model);
+                }
+
+                return Result<LoginModel>.Failure("UnAuthorized");//todo
             }
         }
     }

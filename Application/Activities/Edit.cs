@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Errors;
 using AutoMapper;
 using Domain;
@@ -12,7 +13,7 @@ namespace Application.Activities
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Activity Activity { get; set; }
         }
@@ -20,17 +21,11 @@ namespace Application.Activities
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Activity.Title).NotEmpty();
-                RuleFor(x => x.Activity.Description).NotEmpty();
-                RuleFor(x => x.Activity.Category).NotEmpty();
-                RuleFor(x => x.Activity.Date).NotEmpty();
-                RuleFor(x => x.Activity.City).NotEmpty();
-                RuleFor(x => x.Activity.Venue).NotEmpty();
+                RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
             }
         }
 
-
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -39,18 +34,17 @@ namespace Application.Activities
                 _mapper = mapper;
                 _context = context;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var activity = await _context.Activities.FindAsync(request.Activity.Id);
-                if (activity == null)
-                    throw new RestException(System.Net.HttpStatusCode.NotFound, new { activity = "Not found" });
+                if (activity == null) return null;
 
                 _mapper.Map(request.Activity, activity);
 
-                var success = await _context.SaveChangesAsync() > 0;
-                if (success) return Unit.Value;
+                var result = await _context.SaveChangesAsync() > 0;
+                if (!result) return Result<Unit>.Failure("Failed to Edit activity.");
 
-                throw new Exception("Problem saving db changes");
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

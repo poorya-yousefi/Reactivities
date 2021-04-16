@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -10,7 +11,7 @@ namespace Application.Activities
 {
     public class Create
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Activity Activity { get; set; }
         }
@@ -19,41 +20,25 @@ namespace Application.Activities
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Activity.Title).NotEmpty();
-                RuleFor(x => x.Activity.Description).NotEmpty();
-                RuleFor(x => x.Activity.Category).NotEmpty();
-                RuleFor(x => x.Activity.Date).NotEmpty();
-                RuleFor(x => x.Activity.City).NotEmpty();
-                RuleFor(x => x.Activity.Venue).NotEmpty();
+                RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             public Handler(DataContext context)
             {
                 _context = context;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                // var activity = new Activity
-                // {
-                //     Id = request.Id,
-                //     Title = request.Title,
-                //     Description = request.Description,
-                //     Category = request.Category,
-                //     Date = request.Date,
-                //     City = request.City,
-                //     Venue = request.Venue
-                // };
-
                 _context.Activities.Add(request.Activity);
 
-                var success = await _context.SaveChangesAsync() > 0;
-                if (success) return Unit.Value;
+                var result = await _context.SaveChangesAsync() > 0;
+                if (!result) return Result<Unit>.Failure("Failed to create activity.");
 
-                throw new Exception("Problem saving db changes");
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

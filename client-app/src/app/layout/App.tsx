@@ -16,11 +16,13 @@ import ActivityDetails from "../../features/activities/details/ActivityDetails";
 import NotFound from "./NotFound";
 import { ToastContainer } from "react-toastify";
 import { LoginForm } from "../../features/user/LoginForm";
+import TestErrors from "../../features/errors/TestError";
+import ServerError from "../../features/errors/ServerError";
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
     return (
         <Fragment>
-            <ToastContainer position="bottom-right" />
+            <ToastContainer position="bottom-right" hideProgressBar />
             <Route exact path="/" component={HomePage} />
             <Route
                 path={"/(.+)"}
@@ -45,6 +47,15 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                                     component={ActivityForm}
                                 />
                                 <Route path="/login" component={LoginForm} />
+                                <Route
+                                    exact
+                                    path="/errors"
+                                    component={TestErrors}
+                                />
+                                <Route
+                                    path="/server-error"
+                                    component={ServerError}
+                                />
                                 <Route component={NotFound} />
                             </Switch>
                         </Container>

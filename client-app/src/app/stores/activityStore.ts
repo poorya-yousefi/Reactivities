@@ -3,14 +3,10 @@ import { SyntheticEvent } from "react";
 import agent from "../api/agent";
 import { IActivity } from "../models/activity";
 import { history } from "../..";
-import { RootStore } from "./rootStore";
 
 export default class ActivityStore {
-    rootStore: RootStore;
-
-    constructor(rootStore: RootStore) {
+    constructor() {
         makeAutoObservable(this);
-        this.rootStore = rootStore;
     }
 
     activities = new Map();

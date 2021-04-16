@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Grid, Segment } from "semantic-ui-react";
 import { ActivityFormValues } from "../../../app/models/activity";
 import { v4 as uuid } from "uuid";
@@ -17,7 +17,7 @@ import {
     hasLengthGreaterThan,
     isRequired,
 } from "revalidate";
-import { RootStoreContext } from "../../../app/stores/rootStore";
+import { useStore } from "../../../app/stores/store";
 
 const validate = combineValidators({
     title: isRequired({ message: "The event title is required" }),
@@ -42,13 +42,13 @@ const ActivityForm: React.FC<RouteComponentProps<DetailsParam>> = ({
     match,
     history,
 }) => {
-    const rootStore = useContext(RootStoreContext);
+    const { activityStore } = useStore();
     const {
         createActivity,
         submitting,
         editActivity,
         loadActivity,
-    } = rootStore.activityStore;
+    } = activityStore;
 
     const [activity, setActivity] = useState(new ActivityFormValues());
     const [loading, setLoading] = useState(false);

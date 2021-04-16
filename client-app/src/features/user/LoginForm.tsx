@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Field, Form as FinalForm } from "react-final-form";
 import { Button, Form } from "semantic-ui-react";
 import TextInput from "../../app/common/form/TextInput";
 import { IUserFormValues } from "../../app/models/user";
-import { RootStoreContext } from "../../app/stores/rootStore";
+import { useStore } from "../../app/stores/store";
 
 export const LoginForm = () => {
-    const rootStore = useContext(RootStoreContext);
-    const { login } = rootStore.userStore;
+    const { userStore } = useStore();
+    const { login } = userStore;
 
     return (
         <div>

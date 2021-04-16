@@ -1,14 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { IUser, IUserFormValues } from "../models/user";
-import { RootStore } from "./rootStore";
 
 export default class UserStore {
-    rootStore: RootStore;
-
-    constructor(rootStore: RootStore) {
+    constructor() {
         makeAutoObservable(this);
-        this.rootStore = rootStore;
     }
 
     user: IUser | null = null;
