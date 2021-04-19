@@ -25,7 +25,7 @@ export default class ActivityStore {
         );
         return Object.entries(
             sortedActivities.reduce((activities, activity) => {
-                const date = activity.date.toISOString().split("T")[0];
+                const date = activity.date!.toISOString().split("T")[0];
                 activities[date] = activities[date]
                     ? [...activities[date], activity]
                     : [activity];

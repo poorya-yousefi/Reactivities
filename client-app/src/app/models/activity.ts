@@ -3,7 +3,7 @@ export interface IActivity {
     title: string;
     description: string;
     category: string;
-    date: Date;
+    date: Date | null;
     city: string;
     venue: string;
 }
@@ -17,7 +17,7 @@ export class ActivityFormValues implements IActivityFormValues {
     title: string = "";
     category: string = "";
     description: string = "";
-    date?: Date = undefined;
+    date: Date | null = null;
     time?: Date = undefined;
     city: string = "";
     venue: string = "";

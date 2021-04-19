@@ -11,7 +11,7 @@ import {
     withRouter,
 } from "react-router-dom";
 import HomePage from "../../features/home/HomePage";
-import ActivityForm from "../../features/activities/form/ActivityForm";
+import ActivityForm2 from "../../features/activities/form/ActivityForm2";
 import ActivityDetails from "../../features/activities/details/ActivityDetails";
 import NotFound from "./NotFound";
 import { ToastContainer } from "react-toastify";
@@ -44,7 +44,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                                 <Route
                                     key={location.key} //help switch between create and edit state
                                     path={["/createActivity", "/manage/:id"]}
-                                    component={ActivityForm}
+                                    component={ActivityForm2}
                                 />
                                 <Route path="/login" component={LoginForm} />
                                 <Route
