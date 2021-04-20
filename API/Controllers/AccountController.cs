@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Users;
 using Application.ViewModels;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class UserController : BaseController
+    public class AccountController : BaseController
     {
         [AllowAnonymous]
         [HttpPost("login")]
@@ -26,7 +27,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<UserModel>> CurrentUser()
         {
-            return await Mediator.Send(new CurrentUser.Query());
+            return await Mediator.Send(new CurrentUser.Query { User = User });
         }
     }
 }

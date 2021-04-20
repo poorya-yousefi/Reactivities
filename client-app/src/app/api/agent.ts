@@ -49,7 +49,7 @@ axios.interceptors.response.use(
         switch (status) {
             case 400:
                 if (typeof data === "string") {
-                    toast.error("Bad Request");
+                    toast.error("Bad Request >> " + data);
                 }
                 if (
                     config.method === "get" &&
@@ -68,7 +68,7 @@ axios.interceptors.response.use(
                 }
                 break;
             case 401:
-                toast.error("Unauthorised");
+                toast.error("Unauthorized");
                 break;
             case 404:
                 history.push("/not-found");

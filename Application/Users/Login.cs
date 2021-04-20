@@ -48,7 +48,7 @@ namespace Application.Users
             {
                 var user = await userManager.FindByEmailAsync(request.Email);
 
-                if (user == null) return null;
+                if (user == null) return Result<LoginModel>.Unauthorized();
 
                 var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
@@ -64,8 +64,10 @@ namespace Application.Users
 
                     return Result<LoginModel>.Success(model);
                 }
-
-                return Result<LoginModel>.Failure("UnAuthorized");//todo
+                else
+                {
+                    return Result<LoginModel>.Failure("Password is wrong.");
+                }
             }
         }
     }

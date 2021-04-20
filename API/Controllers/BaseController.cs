@@ -17,8 +17,10 @@ namespace API.Controllers
 
         protected ActionResult HandleResult<T>(Result<T> result)
         {
-            if (result.Value == null) return NotFound();
+            if (!result.IsSuccess && result.Error == "401") return Unauthorized();
+            if (!result.IsSuccess && !string.IsNullOrEmpty(result.Error)) return BadRequest(result.Error);
             if (result.IsSuccess && result.Value != null) return Ok(result.Value);
+            if (result.Value == null) return NotFound();
             return BadRequest(result.Error);
         }
     }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -10,26 +11,26 @@ namespace Application.Users
 {
     public class CurrentUser
     {
-        public class Query : IRequest<UserModel> { }
+        public class Query : IRequest<UserModel>
+        {
+            public ClaimsPrincipal User { get; set; }
+        }
 
         public class Handler : IRequestHandler<Query, UserModel>
         {
             private readonly UserManager<AppUser> _userManager;
             private readonly IJwtGenerator _jwtGenerator;
-            private readonly IUserAccessor _userAccessor;
 
             public Handler(UserManager<Domain.AppUser> userManager,
-                            IJwtGenerator jwtGenerator,
-                            IUserAccessor userAccessor)
+                            IJwtGenerator jwtGenerator)
             {
                 _userManager = userManager;
                 _jwtGenerator = jwtGenerator;
-                _userAccessor = userAccessor;
             }
 
             public async Task<UserModel> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+                var user = await _userManager.FindByEmailAsync(request.User.FindFirstValue(ClaimTypes.Email));
 
                 return new UserModel
                 {
