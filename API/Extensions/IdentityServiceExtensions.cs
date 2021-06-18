@@ -36,7 +36,6 @@ namespace API.Extensions
                         });
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
-            services.AddScoped<IUserAccessor, UserAccessor>();
             return services;
         }
     }

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import "./styles.css";
 import { Container } from "semantic-ui-react";
 import NavBar from "../../features/nav/NavBar";
@@ -15,14 +15,31 @@ import ActivityForm2 from "../../features/activities/form/ActivityForm2";
 import ActivityDetails from "../../features/activities/details/ActivityDetails";
 import NotFound from "./NotFound";
 import { ToastContainer } from "react-toastify";
-import { LoginForm } from "../../features/user/LoginForm";
+import LoginForm from "../../features/user/LoginForm";
 import TestErrors from "../../features/errors/TestError";
 import ServerError from "../../features/errors/ServerError";
+import { useStore } from "../stores/store";
+import { LoadingComponent } from "./LoadingComponent";
+import ModalContainer from "../common/modals/ModalContainer";
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
+    const { userStore, commonStore } = useStore();
+
+    useEffect(() => {
+        if (commonStore.token) {
+            userStore.getUser().finally(() => commonStore.setAppLoaded());
+        } else {
+            commonStore.setAppLoaded();
+        }
+    }, [commonStore, userStore]);
+
+    if (!commonStore.appLoaded)
+        return <LoadingComponent text="Loading App..." />;
+
     return (
         <Fragment>
             <ToastContainer position="bottom-right" hideProgressBar />
+            <ModalContainer />
             <Route exact path="/" component={HomePage} />
             <Route
                 path={"/(.+)"}

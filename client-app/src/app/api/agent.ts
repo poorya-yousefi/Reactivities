@@ -7,26 +7,11 @@ import { store } from "../stores/store";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
-// axios.interceptors.response.use(undefined, (error) => {
-//     if (error.message === "Network Error" && !error.response) {
-//         toast.error("Netwok error - make sure API running!");
-//     }
-//     const { status, data, config } = error.response;
-//     if (status === 404) {
-//         history.push("/notfound");
-//     }
-//     if (
-//         status === 400 &&
-//         config.method === "get" &&
-//         data.errors.hasOwnProperty("id")
-//     ) {
-//         history.push("/notfound");
-//     }
-//     if (status === 500) {
-//         toast.error("Server error - check terminal for more info!");
-//     }
-//     throw error;
-// });
+axios.interceptors.request.use((config) => {
+    const token = store.commonStore.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
@@ -102,16 +87,16 @@ const Activities = {
     delete: (id: string) => requests.del(`/activities/${id}`),
 };
 
-const User = {
-    current: (): Promise<IUser> => requests.get("/user"),
-    login: (user: IUserFormValues): Promise<IUser> =>
-        requests.post("/user/login", user),
-    register: (user: IUserFormValues): Promise<IUser> =>
-        requests.post("/user/register", user),
+const Account = {
+    current: (): Promise<IUser> => requests.get<IUser>("/account"),
+    login: (user: IUserFormValues) =>
+        requests.post<IUser>("/account/login", user),
+    register: (user: IUserFormValues) =>
+        requests.post<IUser>("/account/register", user),
 };
 
 const agent = {
     Activities,
-    User,
+    Account,
 };
 export default agent;

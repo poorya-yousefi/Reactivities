@@ -1,6 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { history } from "../..";
 import agent from "../api/agent";
 import { IUser, IUserFormValues } from "../models/user";
+import { store } from "./store";
 
 export default class UserStore {
     constructor() {
@@ -15,13 +17,46 @@ export default class UserStore {
 
     login = async (values: IUserFormValues) => {
         try {
-            const user = await agent.User.login(values);
+            const user = await agent.Account.login(values);
+            store.commonStore.setToken(user.token);
             runInAction(() => {
                 this.user = user;
             });
-            console.log(user);
+            history.push("/activities");
+            store.modalStore.closeModal();
         } catch (error) {
-            console.log(error);
+            throw error;
+        }
+    };
+
+    logout = () => {
+        store.commonStore.setToken(null);
+        this.user = null;
+        history.push("/");
+    };
+
+    getUser = async () => {
+        try {
+            const user = await agent.Account.current();
+            runInAction(() => {
+                this.user = user;
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    register = async (creds: IUserFormValues) => {
+        try {
+            const user = await agent.Account.register(creds);
+            store.commonStore.setToken(user.token);
+            runInAction(() => {
+                this.user = user;
+            });
+            history.push(`/activities`);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
         }
     };
 }
