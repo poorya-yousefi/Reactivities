@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Application.Users.Dto;
 
-namespace Domain
+namespace Application.Activities.Dto
 {
-    public class Activity
+    public class ActivityDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -12,7 +13,8 @@ namespace Domain
         public DateTime Date { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
+        public string HostUserName { get; set; }
         public bool IsCancelled { get; set; }
-        public virtual ICollection<ActivityAttendee> Attendees { get; set; }
+        public ICollection<ProfileDto> Attendees { get; set; }
     }
 }

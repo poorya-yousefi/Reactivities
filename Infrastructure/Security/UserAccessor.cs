@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Security.Claims;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -7,17 +6,17 @@ namespace Infrastructure.Security
 {
     public class UserAccessor : IUserAccessor
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _accessor;
 
-        public UserAccessor(IHttpContextAccessor httpContextAccessor)
+        public UserAccessor(IHttpContextAccessor accessor)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _accessor = accessor;
         }
 
-        public string GetCurrentUsername()
+        public string GetUserName()
         {
-            return _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(c =>
-                c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
+            return _accessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);//give username
+            //return _accessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);//give user-id (note-sure!)
         }
     }
 }
