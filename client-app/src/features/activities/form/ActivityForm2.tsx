@@ -16,12 +16,8 @@ import { ActivityFormValues } from "../../../app/models/activity";
 
 export default observer(function ActivityForm2() {
     const { activityStore } = useStore();
-    const {
-        createActivity,
-        editActivity,
-        loadActivity,
-        loadingInitial,
-    } = activityStore;
+    const { createActivity, editActivity, loadActivity, loadingInitial } =
+        activityStore;
     const { id } = useParams<{ id: string }>();
 
     const [activity, setActivity] = useState<ActivityFormValues>(
@@ -46,7 +42,7 @@ export default observer(function ActivityForm2() {
             );
     }, [id, loadActivity]);
 
-    function handleFormSubmit(activity: any) {
+    function handleFormSubmit(activity: ActivityFormValues) {
         if (!activity.id) {
             let newActivity = {
                 ...activity,

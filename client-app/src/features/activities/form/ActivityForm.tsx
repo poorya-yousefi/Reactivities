@@ -43,12 +43,8 @@ const ActivityForm: React.FC<RouteComponentProps<DetailsParam>> = ({
     history,
 }) => {
     const { activityStore } = useStore();
-    const {
-        createActivity,
-        submitting,
-        editActivity,
-        loadActivity,
-    } = activityStore;
+    const { createActivity, submitting, editActivity, loadActivity } =
+        activityStore;
 
     const [activity, setActivity] = useState(new ActivityFormValues());
     const [loading, setLoading] = useState(false);
@@ -118,13 +114,6 @@ const ActivityForm: React.FC<RouteComponentProps<DetailsParam>> = ({
                                         name="date"
                                         placeholder="Date"
                                         value={activity.date}
-                                    />
-                                    <Field
-                                        component={DateInput}
-                                        time={true}
-                                        name="time"
-                                        placeholder="Time"
-                                        value={activity.time}
                                     />
                                 </Form.Group>
 

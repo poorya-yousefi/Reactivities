@@ -32,6 +32,8 @@ export default class UserStore {
     logout = () => {
         store.commonStore.setToken(null);
         this.user = null;
+        store.activityStore.activities = new Map();
+        store.activityStore.selectedActivity = null;
         history.push("/");
     };
 

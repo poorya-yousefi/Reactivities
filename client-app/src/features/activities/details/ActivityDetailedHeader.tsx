@@ -1,9 +1,10 @@
 import React from "react";
-import { Segment, Item, Header, Button, Image } from "semantic-ui-react";
-import { IActivity } from "../../../app/models/activity";
+import { Segment, Item, Header, Button, Image, Label } from "semantic-ui-react";
+import { Activity } from "../../../app/models/activity";
 import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { useStore } from "../../../app/stores/store";
 
 const activityImageStyle = {
     filter: "brightness(30%)",
@@ -18,12 +19,28 @@ const activityImageTextStyle = {
     color: "white",
 };
 
-const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
+const ActivityDetailedHeader: React.FC<{ activity: Activity }> = ({
     activity,
 }) => {
+    const {
+        activityStore: { updateAttendance, submitting, cancelActivityToggle },
+    } = useStore();
     return (
         <Segment.Group>
             <Segment basic attached="top" style={{ padding: "0" }}>
+                {activity.isCancelled && (
+                    <Label
+                        style={{
+                            position: "absolute",
+                            zIndex: 1000,
+                            left: -14,
+                            top: 20,
+                        }}
+                        ribbon
+                        color="red"
+                        content="Cancelled"
+                    />
+                )}
                 <Image
                     src={`/assets/categoryImages/${activity.category}.jpg`}
                     fluid
@@ -40,7 +57,14 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
                                 />
                                 <p>{format(activity.date!, "eeee do MMMM")}</p>
                                 <p>
-                                    Hosted by <strong>Bob</strong>
+                                    Hosted by{" "}
+                                    <strong>
+                                        <Link
+                                            to={`/profiles/${activity.host?.userName}`}
+                                        >
+                                            {activity.host?.displayName}
+                                        </Link>
+                                    </strong>
                                 </p>
                             </Item.Content>
                         </Item>
@@ -48,16 +72,44 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
                 </Segment>
             </Segment>
             <Segment clearing attached="bottom">
-                <Button color="teal">Join Activity</Button>
-                <Button>Cancel attendance</Button>
-                <Button
-                    as={Link}
-                    to={`/manage/${activity.id}`}
-                    color="orange"
-                    floated="right"
-                >
-                    Manage Event
-                </Button>
+                {activity.isHost ? (
+                    <>
+                        <Button
+                            color={activity.isCancelled ? "green" : "red"}
+                            floated="left"
+                            basic
+                            content={
+                                activity.isCancelled
+                                    ? "Re-activate Activity"
+                                    : "Cancel Activity"
+                            }
+                            onClick={cancelActivityToggle}
+                            loading={submitting}
+                        />
+                        <Button
+                            as={Link}
+                            disabled={activity.isCancelled}
+                            to={`/manage/${activity.id}`}
+                            color="orange"
+                            floated="right"
+                        >
+                            Manage Event
+                        </Button>
+                    </>
+                ) : activity.isGoing ? (
+                    <Button loading={submitting} onClick={updateAttendance}>
+                        Cancel attendance
+                    </Button>
+                ) : (
+                    <Button
+                        disabled={activity.isCancelled}
+                        loading={submitting}
+                        onClick={updateAttendance}
+                        color="teal"
+                    >
+                        Join Activity
+                    </Button>
+                )}
             </Segment>
         </Segment.Group>
     );

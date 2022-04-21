@@ -27,7 +27,7 @@ export default observer(function HomePage() {
                             inverted
                             content="Welcome to Reactivities"
                         />
-                        <Button as={Link} to="/actvities" size="huge" inverted>
+                        <Button as={Link} to="/activities" size="huge" inverted>
                             Go to Activities
                         </Button>
                     </>

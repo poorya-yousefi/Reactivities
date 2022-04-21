@@ -8,11 +8,11 @@ import { useStore } from "../../../app/stores/store";
 
 const ActivityDashboard: React.FC = () => {
     const { activityStore } = useStore();
-    const { loadActivities, loadingInitial } = activityStore;
+    const { loadActivities, loadingInitial, activities } = activityStore;
 
     useEffect(() => {
-        loadActivities();
-    }, [loadActivities]);
+        if (activities.size <= 1) loadActivities();
+    }, [activities.size, loadActivities]);
 
     if (loadingInitial)
         return <LoadingComponent text={"Activities Loading..."} />;

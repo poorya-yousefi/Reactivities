@@ -17,7 +17,11 @@ const ActivityDetails: React.FC<RouteComponentProps<DetailsParam>> = ({
     match,
 }) => {
     const { activityStore } = useStore();
-    const { activity, loadActivity, loadingInitial } = activityStore;
+    const {
+        selectedActivity: activity,
+        loadActivity,
+        loadingInitial,
+    } = activityStore;
 
     useEffect(() => {
         loadActivity(match.params.id);
@@ -35,7 +39,7 @@ const ActivityDetails: React.FC<RouteComponentProps<DetailsParam>> = ({
                 <ActivityDetailedChat />
             </Grid.Column>
             <Grid.Column width={6}>
-                <ActivityDetailedSidebar />
+                <ActivityDetailedSidebar activity={activity} />
             </Grid.Column>
         </Grid>
     );
