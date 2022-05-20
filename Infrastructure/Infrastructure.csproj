@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 <ItemGroup>
-    <ProjectReference Include="..\domain\Domain.csproj"/>
-    <ProjectReference Include="..\application\Application.csproj"/>
+    <ProjectReference Include="..\domain\Domain.csproj" />
+    <ProjectReference Include="..\application\Application.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0"/>
+    <PackageReference Include="CloudinaryDotNet" Version="1.17.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
   </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Users
 {
@@ -46,7 +48,8 @@ namespace Application.Users
 
             public async Task<Result<LoginModel>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = await userManager.FindByEmailAsync(request.Email);
+                var user = await userManager.Users.Include(u => u.Photos)
+                            .FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
 
                 if (user == null) return Result<LoginModel>.Unauthorized();
 
@@ -59,7 +62,7 @@ namespace Application.Users
                         DisplayName = user.DisplayName,
                         Username = user.UserName,
                         Token = jwtGenerator.CreateToken(user),
-                        Image = null
+                        Image = user.Photos?.FirstOrDefault(p => p.IsMain)?.Url
                     };
 
                     return Result<LoginModel>.Success(model);

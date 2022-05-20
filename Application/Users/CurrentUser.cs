@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Application.ViewModels;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Users
 {
@@ -30,14 +32,15 @@ namespace Application.Users
 
             public async Task<UserModel> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = await _userManager.FindByEmailAsync(request.User.FindFirstValue(ClaimTypes.Email));
+                var user = await _userManager.Users.Include(u => u.Photos)
+                            .FirstOrDefaultAsync(u => u.Email.Equals(request.User.FindFirstValue(ClaimTypes.Email)));
 
                 return new UserModel
                 {
                     DisplayName = user.DisplayName,
                     Username = user.UserName,
                     Token = _jwtGenerator.CreateToken(user),
-                    Image = null
+                    Image = user.Photos?.FirstOrDefault(p => p.IsMain)?.Url
                 };
             }
         }
