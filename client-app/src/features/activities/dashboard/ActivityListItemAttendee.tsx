@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Image, List, Popup } from "semantic-ui-react";
 import { Profile } from "../../../app/models/profile";
 import ProfileCard from "../../profile/ProfileCard";
-//import ProfileCard from '../../profiles/ProfileCard';
 
 interface Props {
     attendees: Profile[];
@@ -13,10 +12,10 @@ interface Props {
 export default observer(function ActivityListItemAttendee({
     attendees,
 }: Props) {
-    const styles = {
-        borderColor: "orange",
-        borderWidth: 2,
-    };
+    // const styles = {
+    //     borderColor: "orange",
+    //     borderWidth: 2,
+    // };
 
     return (
         <List horizontal>

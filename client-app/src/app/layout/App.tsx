@@ -21,6 +21,7 @@ import ServerError from "../../features/errors/ServerError";
 import { useStore } from "../stores/store";
 import { LoadingComponent } from "./LoadingComponent";
 import ModalContainer from "../common/modals/ModalContainer";
+import ProfilePage from "../../features/profile/ProfilePage";
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
     const { userStore, commonStore } = useStore();
@@ -62,6 +63,11 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                                     key={location.key} //help switch between create and edit state
                                     path={["/createActivity", "/manage/:id"]}
                                     component={ActivityForm2}
+                                />
+                                <Route
+                                    exact
+                                    path="/profiles/:username"
+                                    component={ProfilePage}
                                 />
                                 <Route path="/login" component={LoginForm} />
                                 <Route
