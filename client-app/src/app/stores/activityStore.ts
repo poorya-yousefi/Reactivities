@@ -209,4 +209,8 @@ export default class ActivityStore {
             });
         }
     };
+
+    clearSelectedActiviy = () => {
+        this.selectedActivity = null;
+    }
 }

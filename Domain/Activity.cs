@@ -14,5 +14,6 @@ namespace Domain
         public string Venue { get; set; }
         public bool IsCancelled { get; set; }
         public virtual ICollection<ActivityAttendee> Attendees { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

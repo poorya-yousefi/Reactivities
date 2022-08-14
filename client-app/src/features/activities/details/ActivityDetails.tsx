@@ -21,11 +21,13 @@ const ActivityDetails: React.FC<RouteComponentProps<DetailsParam>> = ({
         selectedActivity: activity,
         loadActivity,
         loadingInitial,
+        clearSelectedActiviy,
     } = activityStore;
 
     useEffect(() => {
         loadActivity(match.params.id);
-    }, [loadActivity, match.params.id]);
+        return () => clearSelectedActiviy();
+    }, [loadActivity, match.params.id, clearSelectedActiviy]);
 
     if (loadingInitial) return <LoadingComponent text="Loading activity..." />;
 
@@ -36,7 +38,7 @@ const ActivityDetails: React.FC<RouteComponentProps<DetailsParam>> = ({
             <Grid.Column width={10}>
                 <ActivityDetailedHeader activity={activity} />
                 <ActivityDetailedInfo activity={activity} />
-                <ActivityDetailedChat />
+                <ActivityDetailedChat activityId={activity.id} />
             </Grid.Column>
             <Grid.Column width={6}>
                 <ActivityDetailedSidebar activity={activity} />
