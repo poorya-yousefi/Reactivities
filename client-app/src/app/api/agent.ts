@@ -81,7 +81,8 @@ const requests = {
 
 const Activities = {
     list: (): Promise<Activity[]> => requests.get("/activities"),
-    details: (id: string) => requests.get(`/activities/${id}`),
+    details: (id: string): Promise<Activity> =>
+        requests.get(`/activities/${id}`),
     create: (activity: ActivityFormValues) =>
         requests.post("/activities", activity),
     update: (activity: ActivityFormValues) =>
@@ -109,6 +110,10 @@ const Profiles = {
     },
     setMainPhoto: (id: string) => requests.post(`/photos/${id}/setmain`, {}),
     deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+    updateFollowing: (username: string) =>
+        requests.post(`/follow/${username}`, {}),
+    listFollowings: (username: string, predicate: string) =>
+        requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
 };
 
 const agent = {

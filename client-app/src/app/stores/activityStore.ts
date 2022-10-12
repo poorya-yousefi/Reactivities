@@ -11,7 +11,7 @@ export default class ActivityStore {
         makeAutoObservable(this);
     }
 
-    activities = new Map();
+    activities = new Map<string, Activity>();
     selectedActivity: Activity | null = null;
     loadingInitial = false;
     submitting = false;
@@ -66,7 +66,7 @@ export default class ActivityStore {
                 activity = await agent.Activities.details(id);
                 this.setActivity(activity);
                 runInAction(() => {
-                    this.selectedActivity = activity;
+                    this.selectedActivity = activity!;
                 });
                 return activity;
             } catch (error) {
@@ -129,8 +129,8 @@ export default class ActivityStore {
                         ...this.getActivity(activity.id),
                         ...activity,
                     };
-                    this.activities.set(activity.id, updatedActivity);
-                    this.selectedActivity = updatedActivity;
+                    this.activities.set(activity.id, updatedActivity as Activity);
+                    this.selectedActivity = updatedActivity as Activity;
                 }
             });
             history.push(`/activities/${activity.id}`);
@@ -198,7 +198,7 @@ export default class ActivityStore {
                     !this.selectedActivity?.isCancelled;
                 this.activities.set(
                     this.selectedActivity!.id,
-                    this.selectedActivity
+                    this.selectedActivity!
                 );
             });
         } catch (error) {
@@ -212,5 +212,16 @@ export default class ActivityStore {
 
     clearSelectedActiviy = () => {
         this.selectedActivity = null;
+    }
+
+    updateAttendeeFollowing = (username: string) => {
+        this.activities.forEach(activity => {
+            activity.attendees.forEach(attendee => {
+                if (attendee.userName === username) {
+                    attendee.following ? attendee.followersCount-- : attendee.followersCount++;
+                    attendee.following = !attendee.following;
+                }
+            })
+        })
     }
 }
