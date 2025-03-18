@@ -76,11 +76,11 @@ namespace API.Controllers
             throw new Exception("Problem creating user");
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<UserModel>> CurrentUser()
+        public async Task<IActionResult> CurrentUser()
         {
-            return await Mediator.Send(new CurrentUser.Query { User = User });
+            return HandleResult(await Mediator.Send(new CurrentUser.Query { User = User }));
         }
     }
 }

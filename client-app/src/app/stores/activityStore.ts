@@ -5,17 +5,31 @@ import { Activity, ActivityFormValues } from "../models/activity";
 import { history } from "../..";
 import { store } from "./store";
 import { Profile } from "../models/profile";
+import { Pagination, PagingParams } from "../models/pagination";
 
 export default class ActivityStore {
-    constructor() {
-        makeAutoObservable(this);
-    }
-
     activities = new Map<string, Activity>();
     selectedActivity: Activity | null = null;
     loadingInitial = false;
     submitting = false;
     target = "";
+    pagination: Pagination | null = null;
+    pagingParams = new PagingParams();
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    setPagingParams = (pagingParams: PagingParams) => {
+        this.pagingParams = pagingParams;
+    };
+
+    get axiosParams() {
+        const params = new URLSearchParams();
+        params.append("pageNumber", this.pagingParams.pageNumber.toString());
+        params.append("pageSize", this.pagingParams.pageSize.toString());
+        return params;
+    }
 
     get activitiesByDate() {
         return this.groupActivitiesByDate(Array.from(this.activities.values()));
@@ -39,11 +53,12 @@ export default class ActivityStore {
     loadActivities = async () => {
         this.loadingInitial = true;
         try {
-            const activities = await agent.Activities.list();
+            const activities = await agent.Activities.list(this.axiosParams);
             runInAction(() => {
-                activities.forEach((acv) => {
+                activities.data.forEach((acv) => {
                     this.setActivity(acv);
                 });
+                this.setPagination(activities.pagination);
                 this.loadingInitial = false;
             });
         } catch (error) {
@@ -54,6 +69,9 @@ export default class ActivityStore {
             });
         }
     };
+
+    private setPagination = (pagination: Pagination) =>
+        (this.pagination = pagination);
 
     loadActivity = async (id: string) => {
         let activity = this.getActivity(id);
@@ -129,7 +147,10 @@ export default class ActivityStore {
                         ...this.getActivity(activity.id),
                         ...activity,
                     };
-                    this.activities.set(activity.id, updatedActivity as Activity);
+                    this.activities.set(
+                        activity.id,
+                        updatedActivity as Activity
+                    );
                     this.selectedActivity = updatedActivity as Activity;
                 }
             });
@@ -212,16 +233,18 @@ export default class ActivityStore {
 
     clearSelectedActiviy = () => {
         this.selectedActivity = null;
-    }
+    };
 
     updateAttendeeFollowing = (username: string) => {
-        this.activities.forEach(activity => {
-            activity.attendees.forEach(attendee => {
+        this.activities.forEach((activity) => {
+            activity.attendees.forEach((attendee) => {
                 if (attendee.userName === username) {
-                    attendee.following ? attendee.followersCount-- : attendee.followersCount++;
+                    attendee.following
+                        ? attendee.followersCount--
+                        : attendee.followersCount++;
                     attendee.following = !attendee.following;
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 }

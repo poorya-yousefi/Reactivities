@@ -31,6 +31,7 @@ export default class UserStore {
 
     logout = () => {
         store.commonStore.setToken(null);
+        window.localStorage.removeItem('jwt');
         this.user = null;
         store.activityStore.activities = new Map();
         store.activityStore.selectedActivity = null;

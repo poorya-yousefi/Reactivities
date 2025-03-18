@@ -5,6 +5,7 @@ import { Activity, ActivityFormValues } from "../models/activity";
 import { Photo, Profile } from "../models/profile";
 import { IUser, IUserFormValues } from "../models/user";
 import { store } from "../stores/store";
+import { PaginationResult } from "../models/pagination";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -25,6 +26,14 @@ const sleep = (delay: number) => {
 axios.interceptors.response.use(
     async (response) => {
         await sleep(1000);
+        const pagination = response.headers.pagination;
+        if (pagination) {
+            response.data = new PaginationResult(
+                response.data,
+                JSON.parse(pagination)
+            );
+            return response as AxiosResponse<PaginationResult<any>>;
+        }
         return response;
     },
     (error: AxiosError) => {
@@ -55,6 +64,7 @@ axios.interceptors.response.use(
                 break;
             case 401:
                 toast.error("Unauthorized");
+                store.userStore.logout();
                 break;
             case 404:
                 history.push("/not-found");
@@ -80,7 +90,8 @@ const requests = {
 };
 
 const Activities = {
-    list: (): Promise<Activity[]> => requests.get("/activities"),
+    list: (params: URLSearchParams): Promise<PaginationResult<Activity[]>> =>
+        axios.get("/activities", { params }).then(responseBody),
     details: (id: string): Promise<Activity> =>
         requests.get(`/activities/${id}`),
     create: (activity: ActivityFormValues) =>

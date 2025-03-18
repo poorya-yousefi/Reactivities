@@ -36,10 +36,12 @@ namespace API.Extensions
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader()
+                    policy
+                    .WithOrigins("http://localhost:3000")
+                    .WithExposedHeaders("Pagination")
+                    .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials()//to use signalR
-                    .WithOrigins("http://localhost:3000");
+                    .AllowCredentials();//to use signalR
                 });
             });
             services.AddMediatR(typeof(Application.Activities.List.Handler).Assembly);
